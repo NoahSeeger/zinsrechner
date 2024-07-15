@@ -18,8 +18,8 @@ function Home() {
               Zinseszinseffekt wie nie zuvor –{" "}
               <span className="text-blue-600">klar, einfach, präzise</span>.
             </p>
-            <a
-              href="/rechner"
+            <Link
+              to={"/rechner"}
               class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 bg-blue-600"
             >
               Starte den Rechner
@@ -35,7 +35,7 @@ function Home() {
                   clip-rule="evenodd"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </div>
           <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
             <DemoChart />
