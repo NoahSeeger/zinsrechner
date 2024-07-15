@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import DemoChart from "../components/DemoChart";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
