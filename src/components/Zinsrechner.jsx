@@ -18,8 +18,8 @@ function Zinsrechner() {
   const [compoundingFrequency, setCompoundingFrequency] = useState("jährl");
   const [years, setYears] = useState(5);
   const [endCapitalArray, setEndCapitalArray] = useState([
-    { year: 1, capital: "412" },
-    { year: 2, capital: "5000" },
+    { year: 1, capital: "412", interest: "12" },
+    { year: 2, capital: "5000", interest: "1000" },
   ]);
 
   useEffect(() => {
@@ -51,21 +51,28 @@ function Zinsrechner() {
         P * compoundedFactor +
         S * ((compoundedFactor - 1) / (r / n)) * (1 + r / n);
 
-      return totalCapital.toFixed(0);
+      const interest = (totalCapital - P - S * t).toFixed(0);
+
+      return [totalCapital.toFixed(0), interest];
     };
 
     // Function to update endCapitalArray
     const updateEndCapitalArray = () => {
       const newArray = [];
       for (let i = 1; i <= years; i++) {
-        const result = calculateEndCapital(
+        const [capital, interest] = calculateEndCapital(
           startCapital,
           monthlySavingRate,
           annualInterestRate,
           compoundingFrequency,
           i
         );
-        newArray.push({ year: i, capital: result });
+        console.log(capital, interest);
+        newArray.push({
+          year: i,
+          capital: capital,
+          interest: interest,
+        });
       }
       setEndCapitalArray(newArray);
     };
@@ -170,53 +177,58 @@ function Zinsrechner() {
           />
         </div>
         {/* <button onClick={handleCalculate}>Berechnen</button> */}
-
-        <div className="h-full w-full">
-          <ResponsiveContainer width="100%" height="100%" aspect={500 / 300}>
-            <AreaChart
-              data={endCapitalArray}
-              margin={{
-                top: 10,
-                right: 10,
-                left: 10,
-                bottom: 0,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" />
-              <YAxis
-                domain={[
-                  0,
-                  Math.floor(
-                    endCapitalArray[endCapitalArray.length - 1].capital
-                  ),
-                ]}
-              />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="capital"
-                stroke="#8884d8"
-                fill="#8884d8"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white">
-          <BarChart width={550} height={450} data={endCapitalArray}>
-            {/* <CartesianGrid strokeDasharray="3 3" /> */}
-            <XAxis dataKey="year" />
-            <YAxis
-              domain={[
-                0,
-                Math.floor(
-                  endCapitalArray[endCapitalArray.length - 1].capital * 1.2
-                ),
-              ]}
-            />
-            <Tooltip />
-            <Bar dataKey="capital" fill="#f87171" />
-          </BarChart>
+        <div className="">
+          <h3>Entwicklung des Kapitals</h3>
+          <div className="h-full w-full bg-white rounded-md my-5">
+            <ResponsiveContainer width="100%" height="100%" aspect={500 / 300}>
+              <AreaChart
+                data={endCapitalArray}
+                margin={{
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="year" />
+                <YAxis
+                  domain={[
+                    0,
+                    Math.floor(
+                      endCapitalArray[endCapitalArray.length - 1].capital
+                    ),
+                  ]}
+                />
+                <Tooltip />
+                <Area
+                  type="monotone"
+                  dataKey="capital"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <h3>Jährliche Steigerung des Kapitals</h3>
+          <div className="bg-white rounded-md">
+            <ResponsiveContainer width="100%" height="100%" aspect={500 / 300}>
+              <BarChart width={550} height={450} data={endCapitalArray}>
+                {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                <XAxis dataKey="year" />
+                <YAxis
+                  domain={[
+                    0,
+                    Math.floor(
+                      endCapitalArray[endCapitalArray.length - 1].interest * 1.2
+                    ),
+                  ]}
+                />
+                <Tooltip />
+                <Bar dataKey="interest" fill="#f87171" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
