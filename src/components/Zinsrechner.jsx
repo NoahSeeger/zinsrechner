@@ -94,142 +94,168 @@ function Zinsrechner() {
   };
 
   return (
-    <div className="flex items-center justify-center ">
-      <div className="bg-gray-300 w-[60vw] p-5 rounded-xl flex flex-col gap-4">
-        <h2 className="text-xl">💰 Zinsrechner</h2>
-        <div className="flex flex-col">
-          <label>Anfangskapital: </label>
-          <input
-            className="px-2 p-1 border-[1px] border-gray-300 rounded-md focus:border-blue-400"
-            type="text"
-            value={startCapital}
-            onChange={(e) => setStartCapital(parseFloat(e.target.value))}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Monatliche Sparrate: </label>
-          <input
-            className="px-2 p-1 border-[1px] border-gray-300 rounded-md focus:border-blue-400"
-            type="number"
-            value={monthlySavingRate}
-            onChange={(e) => setMonthlySavingRate(parseFloat(e.target.value))}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Zinsrate pro Jahr in %: </label>
-          <input
-            className="px-2 p-1 border-[1px] border-gray-300 rounded-md focus:border-blue-400"
-            type="number"
-            step="1"
-            value={annualInterestRate}
-            onChange={(e) => setAnnualInterestRate(parseFloat(e.target.value))}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Ausschüttungen (pro Jahr): </label>
-          <div className="flex">
-            <label htmlFor="jährl">Jährlich</label>
-            <input
-              type="radio"
-              value="jährl"
-              name="ausschüttungen"
-              onChange={(e) => setCompoundingFrequency(e.target.value)}
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="p-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            💰 Zinsrechner
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <InputField
+              label="Anfangskapital"
+              value={startCapital}
+              onChange={(e) => setStartCapital(parseFloat(e.target.value))}
             />
-            <label htmlFor="monatl">Monatlich</label>
-            <input
-              type="radio"
-              value="monatl"
-              name="ausschüttungen"
-              onChange={(e) => setCompoundingFrequency(e.target.value)}
+            <InputField
+              label="Monatliche Sparrate"
+              value={monthlySavingRate}
+              onChange={(e) => setMonthlySavingRate(parseFloat(e.target.value))}
             />
-            <label htmlFor="tägl">Täglich</label>
-            <input
-              type="radio"
-              value="tägl"
-              name="ausschüttungen"
-              onChange={(e) => setCompoundingFrequency(e.target.value)}
+            <InputField
+              label="Zinsrate pro Jahr in %"
+              value={annualInterestRate}
+              onChange={(e) =>
+                setAnnualInterestRate(parseFloat(e.target.value))
+              }
+              step="0.1"
             />
-            <span>{compoundingFrequency}</span>
+            <InputField
+              label="Jahre"
+              value={years}
+              onChange={(e) =>
+                parseFloat(e.target.value) >= 1
+                  ? setYears(parseFloat(e.target.value))
+                  : setYears(1)
+              }
+              min="1"
+              max="100"
+            />
           </div>
 
-          {/* <input
-            className="px-2 p-1 border-[1px] border-gray-300 rounded-md focus:border-blue-400"
-            type="number"
-            value={compoundingFrequency}
-            onChange={(e) =>
-              setCompoundingFrequency(parseFloat(e.target.value))
-            }
-          /> */}
-        </div>
-        <div className="flex flex-col">
-          <label>Jahre: </label>
-          <input
-            min="1"
-            max="100"
-            className="px-2 p-1 border-[1px] border-gray-300 rounded-md focus:border-blue-400"
-            type="number"
-            value={years}
-            onChange={(e) =>
-              parseFloat(e.target.value) >= 1
-                ? setYears(parseFloat(e.target.value))
-                : setYears(1)
-            }
-          />
-        </div>
-        {/* <button onClick={handleCalculate}>Berechnen</button> */}
-        <div className="">
-          <h3>Entwicklung des Kapitals</h3>
-          <div className="h-full w-full bg-white rounded-md my-5">
-            <ResponsiveContainer width="100%" height="100%" aspect={500 / 300}>
-              <AreaChart
-                data={endCapitalArray}
-                margin={{
-                  top: 10,
-                  right: 10,
-                  left: 10,
-                  bottom: 0,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" />
-                <YAxis
-                  domain={[
-                    0,
-                    Math.floor(
-                      endCapitalArray[endCapitalArray.length - 1].capital
-                    ),
-                  ]}
-                />
-                <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey="capital"
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Ausschüttungen (pro Jahr)
+            </label>
+            <div className="flex space-x-4">
+              <RadioButton
+                id="jaehrl"
+                value="jährl"
+                label="Jährlich"
+                checked={compoundingFrequency === "jährl"}
+                onChange={(e) => setCompoundingFrequency(e.target.value)}
+              />
+              <RadioButton
+                id="monatl"
+                value="monatl"
+                label="Monatlich"
+                checked={compoundingFrequency === "monatl"}
+                onChange={(e) => setCompoundingFrequency(e.target.value)}
+              />
+              <RadioButton
+                id="taegl"
+                value="tägl"
+                label="Täglich"
+                checked={compoundingFrequency === "tägl"}
+                onChange={(e) => setCompoundingFrequency(e.target.value)}
+              />
+            </div>
           </div>
-          <h3>Jährliche Steigerung des Kapitals</h3>
-          <div className="bg-white rounded-md">
-            <ResponsiveContainer width="100%" height="100%" aspect={500 / 300}>
-              <BarChart width={550} height={450} data={endCapitalArray}>
-                {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                <XAxis dataKey="year" />
-                <YAxis
-                  domain={[
-                    0,
-                    Math.floor(
-                      endCapitalArray[endCapitalArray.length - 1].interest * 1.2
-                    ),
-                  ]}
-                />
-                <Tooltip />
-                <Bar dataKey="interest" fill="#f87171" />
-              </BarChart>
-            </ResponsiveContainer>
+
+          <div className="space-y-8">
+            <ChartSection
+              title="Entwicklung des Kapitals"
+              chart={
+                <AreaChart
+                  data={endCapitalArray}
+                  margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="year" />
+                  <YAxis
+                    domain={[
+                      0,
+                      Math.floor(
+                        endCapitalArray[endCapitalArray.length - 1].capital
+                      ),
+                    ]}
+                  />
+                  <Tooltip />
+                  <Area
+                    type="monotone"
+                    dataKey="capital"
+                    stroke="#4F46E5"
+                    fill="#818CF8"
+                  />
+                </AreaChart>
+              }
+            />
+
+            <ChartSection
+              title="Jährliche Steigerung des Kapitals"
+              chart={
+                <BarChart data={endCapitalArray}>
+                  <XAxis dataKey="year" />
+                  <YAxis
+                    domain={[
+                      0,
+                      Math.floor(
+                        endCapitalArray[endCapitalArray.length - 1].interest *
+                          1.2
+                      ),
+                    ]}
+                  />
+                  <Tooltip />
+                  <Bar dataKey="interest" fill="#F87171" />
+                </BarChart>
+              }
+            />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function InputField({ label, ...props }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+      </label>
+      <input
+        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+        type="number"
+        {...props}
+      />
+    </div>
+  );
+}
+
+function RadioButton({ id, label, ...props }) {
+  return (
+    <div className="flex items-center">
+      <input
+        id={id}
+        type="radio"
+        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+        {...props}
+      />
+      <label htmlFor={id} className="ml-2 block text-sm text-gray-900">
+        {label}
+      </label>
+    </div>
+  );
+}
+
+function ChartSection({ title, chart }) {
+  return (
+    <div>
+      <h3 className="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <ResponsiveContainer width="100%" height={300}>
+          {chart}
+        </ResponsiveContainer>
       </div>
     </div>
   );
